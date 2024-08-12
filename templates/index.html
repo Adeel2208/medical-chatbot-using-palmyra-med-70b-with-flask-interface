@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medical Doctor Chat</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f7f9fc;
+        }
+        .main-container {
+            max-width: 900px;
+            margin: 50px auto;
+            padding: 40px;
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+        .header-image {
+            max-height: 150px;
+        }
+        h1 {
+            font-size: 2.5rem;
+            color: #343a40;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+        label {
+            font-weight: bold;
+            color: #495057;
+            font-size: 1.1rem;
+        }
+        textarea {
+            resize: none;
+            transition: border-color 0.3s;
+        }
+        textarea:focus {
+            border-color: #007bff;
+            outline: none;
+        }
+        .btn-submit {
+            background-color: #007bff;
+            color: white;
+            font-size: 1.1rem;
+            padding: 10px 20px;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+        .btn-submit:hover {
+            background-color: #0056b3;
+            transform: translateY(-2px);
+        }
+        h2 {
+            font-size: 1.8rem;
+            color: #343a40;
+            margin-top: 40px;
+            font-weight: bold;
+        }
+        p#response {
+            font-size: 1.3rem;
+            color: #495057;
+            margin-top: 15px;
+            white-space: pre-wrap;
+            line-height: 1.6;
+            padding: 15px;
+            background-color: #e9ecef;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <div class="text-center mb-4">
+            <img src="{{ url_for('static', filename='/Medical-bot.png') }}" alt="Medical Bot" class="header-image img-fluid">
+        </div>
+        <h1 class="text-center">Ask a Medical Question</h1>
+        <form id="questionForm">
+            <div class="form-group">
+                <label for="question">Your Question:</label>
+                <textarea id="question" name="question" rows="4" class="form-control" placeholder="Type your medical question here..."></textarea>
+            </div>
+            <button type="submit" class="btn btn-submit btn-block">Ask</button>
+        </form>
+        <h2>Response:</h2>
+        <p id="response"></p>
+    </div>
+
+    <script>
+        $(document).ready(function(){
+            $('#questionForm').on('submit', function(event){
+                event.preventDefault();
+                $('#response').text("Processing...");
+                $.ajax({
+                    url: '/ask',
+                    method: 'POST',
+                    data: $(this).serialize(),
+                    success: function(data){
+                        $('#response').text(data.response);
+                    },
+                    error: function() {
+                        $('#response').text("An error occurred. Please try again.");
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
